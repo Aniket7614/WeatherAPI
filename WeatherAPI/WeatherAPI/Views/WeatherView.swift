@@ -9,7 +9,10 @@ import SwiftUI
 
 struct WeatherView: View {
     // MARK: - Properties
-    var weather: ResponseBody
+    @State var weather: ResponseBody
+    var weatherManager = WeatherManager()
+    @State private var searchTerm = ""
+    
     
     // MARK: - Body
     var body: some View {
@@ -17,6 +20,37 @@ struct WeatherView: View {
         ZStack(alignment: .leading) {
             // MARK: - City and date
             VStack {
+                HStack {
+                    TextField("", text: $searchTerm)
+                        .padding(.leading, 20)
+                    Button {
+                        Task{
+                            do {
+                                self.weather = try await
+                                weatherManager.getCurrentWeatherByCity(city: searchTerm)
+                            } catch {
+                                print("Error getting weather: \(error)")
+                            }
+                        }
+                        
+                    } label: {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.blue)
+                            Image(systemName: "location.fill")
+                        }
+                    }
+                    .frame(width: 50, height: 50)
+                }
+                .foregroundColor(.white)
+                .padding()
+                .background(ZStack (alignment: .leading){
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.white)
+                        .padding(.leading, 10)
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color.blue.opacity(0.5))
+                })
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Simple Weather App")
                         .bold()
