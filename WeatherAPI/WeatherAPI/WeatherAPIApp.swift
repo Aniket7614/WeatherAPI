@@ -13,5 +13,4 @@ struct WeatherAPIApp: App {
         WindowGroup {
             ContentView()
         }
-    }
-}
+    }}
